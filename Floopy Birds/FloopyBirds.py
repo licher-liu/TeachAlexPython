@@ -70,7 +70,6 @@ def createMap():
     """定义创建地图的方法"""
     screen.fill((255, 255, 255))     # 填充颜色
     screen.blit(background, (0, 0))  # 填入到背景
-
     # 显示管道
     screen.blit(Pipeline.pineUp, (Pipeline.wallx, -300))   # 上管道坐标位置
     screen.blit(Pipeline.pineDown, (Pipeline.wallx, 500))  # 下管道坐标位置
@@ -149,4 +148,4 @@ if __name__ == '__main__':
             getResutl()                      # 如果小鸟死亡，显示游戏总分数
         else:
             createMap()                      # 创建地图
-    pygame.quit()
+    pg.quit()

@@ -12,9 +12,10 @@ class Birds:
 
     def __init__(self):
         self.bird_rect = pg.Rect(65,50,50,50) #鸟的矩形
-        self.bird_status = [pg.image.load("assets/1.png"),
-                            pg.image.load("assets/2.png"),
-                            pg.image.load("assets/dead.png")]
+        # 定义鸟的三种状态
+        self.bird_status = [pg.image.load("assets/1.png"), #滑行
+                            pg.image.load("assets/2.png"), #飞起
+                            pg.image.load("assets/dead.png")] #死亡
         self.status = 0     #默认小鸟飞行状态
         self.X = 120        # 鸟所在X轴坐标,即是向右飞行的速度
         self.Y = 350        # 鸟所在Y轴坐标,即上下飞行高度
@@ -60,17 +61,55 @@ def creat_map():
     pipeline.pipeline_update()
 
     # 显示小鸟
-    #screen.blit(mybird.bird_status[0], (150, 350))
+    #screen.blit(mybird.bird_status[0], (my, 350))
+    if mybird.dead:         #撞到管道状态
+        mybird.status = 2
+    elif mybird.jump:       #起飞状态
+        mybird.status =1
+    screen.blit(mybird.bird_status[mybird.status], (mybird.X, mybird.Y))
+    mybird.update()         #刷新鸟的动作
 
 
     pg.display.update()  # 刷新显示
 
 
+def check_dead():
+    up_rect = pg.Rect(pipeline.wall_x, -300,
+                      pipeline.pipe_up.get_width() - 10,
+                      pipeline.pipe_up.get_height())
+
+    # 下方管子的矩形位置
+    down_rect = pg.Rect(pipeline.wall_x, 500,
+                        pipeline.pipe_down.get_width() - 10,
+                        pipeline.pipe_down.get_height())
+
+    #检查小鸟是否跟管道碰撞了
+    if up_rect.colliderect(mybird.bird_rect) or down_rect.colliderect(mybird.bird_rect):
+        mybird.dead = True
+    # 检查小鸟是飞出边界
+    if not 0< mybird.bird_rect[1] < height:
+        mybird.dead = True
+        return True
+    else:
+        return False
+
+def get_result():
+    final_text1 = "Game Over"
+    final_text2 = "Your final score is:  " + str(score)
+    ft1_font = pg.font.SysFont("Arial", 70)                                      # 设置第一行文字字体
+    ft1_surf = font.render(final_text1, 1, (242, 3, 36))                             # 设置第一行文字颜色
+    ft2_font = pg.font.SysFont("Arial", 50)                                      # 设置第二行文字字体
+    ft2_surf = font.render(final_text2, 1, (253, 177, 6))                            # 设置第二行文字颜色
+    screen.blit(ft1_surf, [screen.get_width() / 2 - ft1_surf.get_width() / 2, 100])  # 设置第一行文字显示位置
+    screen.blit(ft2_surf, [screen.get_width() / 2 - ft2_surf.get_width() / 2, 200])  # 设置第二行文字显示位置
+    pg.display.flip()
+
+
 if __name__ == '__main__':
     """主程序"""
     pg.init()                                 #初始化
-    # pg.font.init()                            #初始化字体
-    # font = pg.font.SysFont("Arial", 50)       #设置字体大小
+    pg.font.init()                            #初始化字体
+    font = pg.font.SysFont("Arial", 50)       #设置字体大小
     size = width, height = 400, 650            #设置窗口大小
     screen = pg.display.set_mode(size)          #显示窗口
     clock = pg.time.Clock()
@@ -87,6 +126,15 @@ if __name__ == '__main__':
             if event.type == pg.QUIT:           #如果点击关闭按钮则结束程序
                 sys.exit()
                 # 判断控制按键程序
+            if (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN) and not mybird.dead:
+                mybird.jump = True  #跳跃
+                mybird.gravity = 5  #重力
+                mybird.jump_speed = 10 #跳跃速度
 
         background = pg.image.load("assets/background.png")     #加载背景图片
-        creat_map()
+        if check_dead():
+            get_result()
+        else:
+            creat_map()
+    pg.quit()
+
