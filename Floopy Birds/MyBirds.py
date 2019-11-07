@@ -3,7 +3,7 @@
 """
     使用pygame制作小鸟游戏，练习Pygame的常用方法
     V1.O  实现小鸟飞行，管道移动，记录分数，小鸟碰撞管道死亡功能
-    
+
 """
 import pygame as pg
 import sys
