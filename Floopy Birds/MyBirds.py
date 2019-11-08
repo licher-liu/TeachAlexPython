@@ -106,37 +106,44 @@ def get_result():
     screen.blit(ft2_surf, [screen.get_width() / 2 - ft2_surf.get_width() / 2, 200])  # 设置第二行文字显示位置
     pg.display.flip()
 
-
-if __name__ == '__main__':
+def main():
     """主程序"""
-    pg.init()                                 #初始化
-    pg.font.init()                            #初始化字体
-    font = pg.font.SysFont("Arial", 50)       #设置字体大小
-    size = width, height = 400, 650            #设置窗口大小
-    screen = pg.display.set_mode(size)          #显示窗口
-    clock = pg.time.Clock()
-    score = 0               #统计分数
-
-    mybird = Birds()
-    pipeline = Pipeline()
 
 
     while True:
-        clock.tick(60)                          #刷新率 每秒执行60次
+        clock.tick(60)  # 刷新率 每秒执行60次
         # 轮询事件
         for event in pg.event.get():
-            if event.type == pg.QUIT:           #如果点击关闭按钮则结束程序
+            if event.type == pg.QUIT:  # 如果点击关闭按钮则结束程序
                 sys.exit()
                 # 判断控制按键程序
             if (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN) and not mybird.dead:
-                mybird.jump = True  #跳跃
-                mybird.gravity = 5  #重力
-                mybird.jump_speed = 10 #跳跃速度
+                mybird.jump = True  # 跳跃
+                mybird.gravity = 5  # 重力
+                mybird.jump_speed = 10  # 跳跃速度
 
-        background = pg.image.load("assets/background.png")     #加载背景图片
+
         if check_dead():
             get_result()
         else:
             creat_map()
     pg.quit()
+
+
+if __name__ == '__main__':
+    # 初始化变量
+    pg.init()  # 初始化
+    pg.font.init()  # 初始化字体
+    font = pg.font.SysFont("Arial", 50)  # 设置字体大小
+    size = width, height = 400, 650  # 设置窗口大小
+    screen = pg.display.set_mode(size)  # 显示窗口
+    clock = pg.time.Clock()
+    score = 0  # 统计分数
+    background = pg.image.load("assets/background.png")  # 加载背景图片
+    mybird = Birds()
+    pipeline = Pipeline()
+
+
+    main()
+
 
